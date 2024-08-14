@@ -19,14 +19,19 @@ const criarEmprestimo = async (req, res) => {
   res.status(201).json(novoEmprestimo);
 };
 
+
 const listarEmprestimos = async (req, res) => {
-  const emprestimo = await emprestimo.findAll({
-    include: [
-      { model: usuario, attributes: ["nome", "email"] },
-      { model: livro, attributes: ["titulo", "autor"] },
-    ],
-  });
-  res.status(200).json(emprestimo);
+  try {
+    const emprestimos = await emprestimo.findAll({
+      include: [
+        { model: usuario, attributes: ["nome", "email"] },
+        { model: livro, attributes: ["titulo", "autor"] },
+      ],
+    });
+    res.status(200).json(emprestimos);
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao listar empréstimos', error });
+  }
 };
 
 const devolverEmprestimo = async (req, res) => {
