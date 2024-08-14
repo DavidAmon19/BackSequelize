@@ -21,6 +21,7 @@ const listarDadosPorId = async (req, res) => {
 };
 
 const criarDados = async (req, res) => {
+  console.log(req.body)
   const { nome, email, role, senha } = req.body;
   const senhaHash = await bcrypt.hash(senha, 8);
   const dados = await usuario.create({
@@ -68,30 +69,34 @@ const deleteDados = async (req, res) => {
 
 
 const loginUsuario = async (req, res) => {
-    const {email, senha} = req.body;
+  const { email, senha } = req.body;
 
-    const dados = await usuario.findOne({ where: {email}})
+  const dados = await usuario.findOne({ where: { email } });
 
-    if(!dados){
-        return res.status(404).json({message: `Credenciais incorretas`})
-    };
+  if (!dados) {
+      return res.status(404).json({ message: `Credenciais incorretas` });
+  }
 
-    const converterSenha = await bcrypt.compare(senha, dados.senha);
+  const converterSenha = await bcrypt.compare(senha, dados.senha);
 
-    if(!converterSenha){
-        return res.status(400).json({message: `Credenciais incorretas`})
-    }
+  if (!converterSenha) {
+      return res.status(400).json({ message: `Credenciais incorretas` });
+  }
 
-    const token = jwt.sign(
-        {id: dados.id, email: dados.email, role: dados.role},
-        process.env.JWT_SECRET,
-        {
-            expiresIn: "1d",
-        }
-    );
+  const token = jwt.sign(
+      { id: dados.id, email: dados.email, role: dados.role },
+      process.env.JWT_SECRET,
+      {
+          expiresIn: "1d",
+      }
+  );
 
-    res.status(200).json({message: `Usuario logado com sucesso`, token})
-
+  // Adicione o role na resposta JSON
+  res.status(200).json({ 
+      message: `Usuario logado com sucesso`, 
+      token, 
+      role: dados.role // Inclua o role na resposta
+  });
 }
 
 module.exports = {

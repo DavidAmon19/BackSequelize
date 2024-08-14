@@ -1,13 +1,12 @@
-const express              = require('express');
-const router               = express.Router();
-const usuarioController    = require('../controllers/usuarioController');
-
+const express = require('express');
+const router = express.Router();
+const usuarioController = require('../controllers/usuarioController');
 
 router.get('/', usuarioController.listarDados);
 router.get('/:id', usuarioController.listarDadosPorId);
-router.post('/', usuarioController.criarDados);
+router.post('/usuario', usuarioController.criarDados); // Alterado para POST /usuario
 router.put('/:id', usuarioController.atualizarDados);
 router.delete('/:id', usuarioController.deleteDados);
-router.post('/', usuarioController.loginUsuario);
+router.post('/login', usuarioController.loginUsuario); // Alterado para POST /login
 
 module.exports = router;
